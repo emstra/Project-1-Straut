@@ -49,7 +49,7 @@ const getUsersMeta = (request, response) => {
 
 const addUser = (request, response, body) => {
   const responseJSON = {
-    message: 'name and age are both required',
+    message: 'need name, author, body, and instructions',
   };
 
   if (!body.name || !body.author || !body.serves || !body.instructions) {
