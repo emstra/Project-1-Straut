@@ -57,7 +57,7 @@
         xhr.onload = () => handleResponse(xhr, false);
       }
 
-      
+
       xhr.send();
 
       e.preventDefault();
@@ -90,12 +90,12 @@
 
 
 
-    const init =()=> {
+    const init = () => {
       const userForm = document.querySelector('#userForm');
       const nameForm = document.querySelector('#nameForm');
 
       const getUsers = (e) => requestUpdate(e, userForm);
-      const makeUsers =(e) => updateUsers(e, nameForm);
+      const makeUsers = (e) => updateUsers(e, nameForm);
 
       userForm.addEventListener('submit', getUsers);
     }
@@ -109,27 +109,100 @@
 
 <body>
   <section id="top">
-    <h3 id ="pgTitle">Recipe</h3>
+    <h3 id="pgTitle">Recipe Book</h3>
 
-    <input id="searchBar" type = "text" size="20" maxlenght="20" autofocus value="Search Here">
-    <div id="recipeContent"></div>
+    <input id="searchBar" type="text" size="20" maxlenght="20" autofocus value="Search Here">
+    <div id="recipeContentvert">
+      <div id="recipeContenthor">
+        <div id="RecipeBox">
+          <h4>Rec. Name</h4>
+          <p>Serves: 1</p>
+          <p>Author: Nimoy Lembardo</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum.</p>
+        </div>
+
+        <div id="RecipeBox">
+          <h4>Rec. Name</h4>
+          <p>Serves: 1</p>
+          <p>Author: Nimoy Lembardo</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum.</p>
+        </div>
+
+        <div id="RecipeBox">
+          <h4>Rec. Name</h4>
+          <p>Serves: 1</p>
+          <p>Author: Nimoy Lembardo</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum.</p>
+        </div>
+      </div>
+
+      <div id="recipeContenthor">
+        <div id="RecipeBox">
+          <h4>Rec. Name</h4>
+          <p>Serves: 1</p>
+          <p>Author: Nimoy Lembardo</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum.</p>
+        </div>
+
+        <div id="RecipeBox">
+          <h4>Rec. Name</h4>
+          <p>Serves: 1</p>
+          <p>Author: Nimoy Lembardo</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum.</p>
+        </div>
+
+        <div id="RecipeBox">
+          <h4>Rec. Name</h4>
+          <p>Serves: 1</p>
+          <p>Author: Nimoy Lembardo</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum.</p>
+        </div>
+      
+    </div>
+
     <hr>
-    
+
+    <h3>Have a Recipe? Submit it!</h3>
+
     <form id="nameForm" action="/addUser" method="post">
 
-      <label for="name">Recipe Name: </label>
-      <input id="nameField" type="text" name="name" />
+      <label for="name" class="formTxt">Recipe Name: </label>
+      <input id="nameField" type="text" name="name" class="formItem"/>
 
-      <label for="author">Author: </label>
-      <input id="authorField" type="text" name="author" />
+      <label for="author" class="formTxt">Author: </label>
+      <input id="authorField" type="text" name="author" class="formItem"/>
 
-      <label for="serves">Serves: </label>
-      <input id="servesField" type="number" name="serves" min="0" max="100" step="1" />
+      <label for="serves" class="formTxt">Serves: </label>
+      <input id="servesField" type="number" name="serves" min="0" max="100" step="1" class="formItem"/>
 
-      <label for="instruction">Instruction: </label>
-      <textarea id="instructionField" name="insturction" rows=15 col=50></textarea>
+      <label for="instructions" class="formTxt">Instruction: </label>
+      <textarea id="instructionField" name="insturction" rows=15 col=50 class="formItem"></textarea>
 
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Submit" class="formItem"/>
     </form>
 
     <form id="userForm" action="/getUsers" method="get">
