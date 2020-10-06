@@ -3,7 +3,8 @@
 
 <head>
   <title>Recipe site</title>
-  <link rel="stylesheet" type="text/css" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sansita+Swashed&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
 
   <script>
 
@@ -108,7 +109,12 @@
 
 <body>
   <section id="top">
-    <h3>Recipe</h3>
+    <h3 id ="pgTitle">Recipe</h3>
+
+    <input id="searchBar" type = "text" size="20" maxlenght="20" autofocus value="Search Here">
+    <div id="recipeContent"></div>
+    <hr>
+    
     <form id="nameForm" action="/addUser" method="post">
 
       <label for="name">Recipe Name: </label>
@@ -123,7 +129,7 @@
       <label for="instruction">Instruction: </label>
       <textarea id="instructionField" name="insturction" rows=15 col=50></textarea>
 
-      <input type="submit" value="Add User" />
+      <input type="submit" value="Submit" />
     </form>
 
     <form id="userForm" action="/getUsers" method="get">
