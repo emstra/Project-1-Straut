@@ -70,8 +70,10 @@
       const name = nameForm.querySelector('#nameField').value;
       const author = nameForm.querySelector('#authorField').value;
       const serves = nameForm.querySelector('#servesField').value;
-      const instructions = nameForm.querySelector('#instructionField').value;
+      const instructions = nameForm.querySelector('#nameField').value;
 
+
+      console.log(instructions);
 
       const xhr = new XMLHttpRequest();
       xhr.open('post', "/addUser");
@@ -80,7 +82,8 @@
 
       xhr.onload = () => handleResponse(xhr, true);
 
-      const formData = `name=${name}&author=${author}&serves=${serves}&instructions=${instructions}`;
+      const formData = `name=${name}&author=${author}&serves=${serves}&nameii=${name}`;
+      console.log(formData);
 
       xhr.send(formData);
 
@@ -199,8 +202,10 @@
       <label for="serves" class="formTxt">Serves: </label>
       <input id="servesField" type="number" name="serves" min="0" max="100" step="1" class="formItem"/>
 
+      
       <label for="instructions" class="formTxt">Instruction: </label>
-      <textarea id="instructionField" name="insturction" rows=15 col=50 class="formItem"></textarea>
+      <input id="instructionField" type="text" name="instructions" class="formItem"/>
+      <!-- <textarea id="instructionField" name="instruction" rows=15 col=50 class="formItem"></textarea> -->
 
       <input type="submit" value="Submit" class="formItem"/>
     </form>

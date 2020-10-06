@@ -1,3 +1,4 @@
+const { Console } = require('console');
 const query = require('querystring');
 // Note this object is purely in memory
 const users = {};
@@ -54,6 +55,8 @@ const addUser = (request, response, body) => {
 
   if (!body.name || !body.author || !body.serves || !body.instructions) {
     responseJSON.id = 'missingParams';
+
+    //console.log(body.name + ', ' + body.author + ', ' + body.serves + ', ' + body.nameii);
     return respondJSON(request, response, 400, responseJSON); // 400=bad request
   }
 
@@ -97,6 +100,8 @@ const updateUser = (request, response, parsedUrl) => {
     request.on('end', () => {
       const bodyString = Buffer.concat(body).toString();
       const bodyParams = query.parse(bodyString);
+
+      console.log(bodyParams);
 
       addUser(request, response, bodyParams);
     });
