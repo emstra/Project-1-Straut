@@ -53,7 +53,7 @@ const addUser = (request, response, body) => {
     message: 'need name, author, body, and instructions',
   };
 
-  if (!body.name || !body.author || !body.serves || !body.instructions) {
+  if (!body.name || !body.author || !body.serves || !body.instruction) {
     responseJSON.id = 'missingParams';
 
     // console.log(body.name + ', ' + body.author + ', ' + body.serves + ', ' + body.nameii);
@@ -72,7 +72,7 @@ const addUser = (request, response, body) => {
   users[body.name].name = body.name;
   users[body.name].author = body.author;
   users[body.name].serves = body.serves;
-  users[body.name].instructions = body.instructions;
+  users[body.name].instruction = body.instruction;
 
   if (responseCode === 201) {
     responseJSON.message = 'Created Successfully';
