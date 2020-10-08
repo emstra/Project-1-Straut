@@ -7,6 +7,18 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
 
   <script>
+"use strict";
+
+const parseJSON = (xhr, content) => {
+    	if(xhr.response && xhr.getResponseHeader('Content-Type') === 'application/json'){
+      	const obj = JSON.parse(xhr.response);
+      	console.dir(obj);
+      	
+      	if(obj.message){
+      		content.innerHTML += `<p>${obj.message}</p>`;
+      	}
+      }
+    };
 
     const handleResponse = (xhr, parseResponse) => {
       const content = document.querySelector('#content');
@@ -32,13 +44,15 @@
           break;
       }
 
-      if (parseResponse) {
-        const obj = JSON.parse(xhr.response);
-        console.dir(obj);
-        content.innerHTML += `<p>${xhr.response}</p>`;
-      } else {
-        content.innerHTML += `<p>metadata received</p>`;
-      }
+
+      parseJSON(xhr, content)
+      // if (parseResponse) {
+      //   const obj = JSON.parse(xhr.response);
+      //   console.dir(obj);
+      //   content.innerHTML += `<p>${xhr.response}</p>`;
+      // } else {
+      //   content.innerHTML += `<p>metadata received</p>`;
+      // }
     };
 
 
@@ -64,7 +78,11 @@
       return false; // prevents event bubbling
     }
 
+
+
     const updateUsers = (e, nameForm) => {
+      e.preventDefault();
+
       //const url = userForm.querySelector('#urlField').value;
       //const method = userForm.querySelector('#methodSelect').value;
       const name = nameForm.querySelector('#nameField').value;
@@ -73,12 +91,13 @@
       const instructions = nameForm.querySelector('#nameField').value;
 
 
-      console.log(instructions);
+      //console.log(instructions);
 
       const xhr = new XMLHttpRequest();
       xhr.open('post', "/addUser");
 
       xhr.setRequestHeader("Accept", "application/json"); // not necessary in this instance
+      xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 
       xhr.onload = () => handleResponse(xhr, true);
 
@@ -87,7 +106,7 @@
 
       xhr.send(formData);
 
-      e.preventDefault();
+      
       return false; // prevents event bubbling
     }
 

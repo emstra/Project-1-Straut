@@ -4,14 +4,12 @@ const query = require('querystring');
 const users = {};
 
 const respondJSON = (request, response, status, object) => {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-
-  response.writeHead(status, headers);
+  response.writeHead(status, { 'Content-Type': 'application/json' });
   response.write(JSON.stringify(object));
   response.end();
 };
+
+
 
 const respondJSONMeta = (request, response, status) => {
   const headers = {
@@ -22,6 +20,8 @@ const respondJSONMeta = (request, response, status) => {
   response.end();
 };
 
+
+
 const getUsers = (request, response) => {
   // create a parent object to hold the users object
   // we could add a message, status code etc ... to this parent object
@@ -31,6 +31,8 @@ const getUsers = (request, response) => {
 
   return respondJSON(request, response, 200, responseJSON);
 };
+
+
 
 const getUsersMeta = (request, response) => {
   // would also be nice to calculate file size, last-modified date etc ...
@@ -48,6 +50,8 @@ const getUsersMeta = (request, response) => {
 //   return respondJSON(request, response, 201, newUser);
 // };
 
+
+
 const addUser = (request, response, body) => {
   const responseJSON = {
     message: 'need name, author, body, and instructions',
@@ -60,9 +64,9 @@ const addUser = (request, response, body) => {
     return respondJSON(request, response, 400, responseJSON); // 400=bad request
   }
 
-  // we DID get a name and age
+  // we got recipie
   let responseCode = 201; // "created"
-  if (users[body.name]) { // user exists
+  if (users[body.name]) { // recipe exists
     responseCode = 204; // updating, so "no content"
   } else {
     users[body.name] = {}; // make a new user
@@ -82,31 +86,7 @@ const addUser = (request, response, body) => {
   return respondJSONMeta(request, response, responseCode); // this is for 204, a "no content" header
 };
 
-const updateUser = (request, response, parsedUrl) => {
-  if (parsedUrl.pathname === '/addUser') {
-    const body = [];
 
-    // https://nodejs.org/api/http.html
-    // request.on('error', (err) => {
-    //   console.dir(error);
-    //   response.statusCode = 400;
-    //   response.end();
-    // });
-
-    request.on('data', (chunk) => {
-      body.push(chunk);
-    });
-
-    request.on('end', () => {
-      const bodyString = Buffer.concat(body).toString();
-      const bodyParams = query.parse(bodyString);
-
-      console.log(bodyParams);
-
-      addUser(request, response, bodyParams);
-    });
-  }
-};
 
 const notFound = (request, response) => {
   const responseJSON = {
@@ -121,7 +101,7 @@ const notFoundMeta = (request, response) => respondJSONMeta(request, response, 4
 module.exports = {
   getUsers,
   getUsersMeta,
-  updateUser,
   notFound,
   notFoundMeta,
+  addUser
 };
