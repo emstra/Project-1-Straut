@@ -1,5 +1,4 @@
 // const { Console } = require('console');
-const query = require('querystring');
 // Note this object is purely in memory
 const users = {};
 
@@ -8,8 +7,6 @@ const respondJSON = (request, response, status, object) => {
   response.write(JSON.stringify(object));
   response.end();
 };
-
-
 
 const respondJSONMeta = (request, response, status) => {
   const headers = {
@@ -20,8 +17,6 @@ const respondJSONMeta = (request, response, status) => {
   response.end();
 };
 
-
-
 const getUsers = (request, response) => {
   // create a parent object to hold the users object
   // we could add a message, status code etc ... to this parent object
@@ -31,8 +26,6 @@ const getUsers = (request, response) => {
 
   return respondJSON(request, response, 200, responseJSON);
 };
-
-
 
 const getUsersMeta = (request, response) => {
   // would also be nice to calculate file size, last-modified date etc ...
@@ -50,8 +43,6 @@ const getUsersMeta = (request, response) => {
 //   return respondJSON(request, response, 201, newUser);
 // };
 
-
-
 const addUser = (request, response, body) => {
   const responseJSON = {
     message: 'need name, author, body, and instructions',
@@ -64,7 +55,7 @@ const addUser = (request, response, body) => {
     return respondJSON(request, response, 400, responseJSON); // 400=bad request
   }
 
-  // we got recipie
+  // we got recipe
   let responseCode = 201; // "created"
   if (users[body.name]) { // recipe exists
     responseCode = 204; // updating, so "no content"
@@ -83,10 +74,8 @@ const addUser = (request, response, body) => {
     return respondJSON(request, response, responseCode, responseJSON);
   }
 
-  return respondJSONMeta(request, response, responseCode); // this is for 204, a "no content" header
+  return respondJSON(request, response, responseCode, responseJSON); // this is for 204, a "no content" header
 };
-
-
 
 const notFound = (request, response) => {
   const responseJSON = {
@@ -103,5 +92,5 @@ module.exports = {
   getUsersMeta,
   notFound,
   notFoundMeta,
-  addUser
+  addUser,
 };
