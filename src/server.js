@@ -35,10 +35,10 @@ const onRequest = (request, response) => {
   const parsedUrl = url.parse(request.url);
   if (request.method === 'POST') {
     handlePost(request, response, parsedUrl);
-    console.dir("posting");
+    console.dir('posting');
   } else {
     handleGet(request, response, parsedUrl);
-    console.dir("getting" + parsedUrl.pathname);
+    console.dir(`getting${parsedUrl.pathname}`);
   }
 };
 

@@ -51,7 +51,7 @@ const addUser = (request, response, body) => {
   if (!body.name || !body.author || !body.serves || !body.instruction) {
     responseJSON.id = 'missingParams';
 
-    // console.log(body.name + ', ' + body.author + ', ' + body.serves + ', ' + body.nameii);
+    console.dir(body.name + ', ' + body.author + ', ' + body.serves + ', ' + body.instruction);
     return respondJSON(request, response, 400, responseJSON); // 400=bad request
   }
 
@@ -74,7 +74,8 @@ const addUser = (request, response, body) => {
     return respondJSON(request, response, responseCode, responseJSON);
   }
 
-  return respondJSON(request, response, responseCode, responseJSON); // this is for 204, a "no content" header
+  return respondJSON(request, response, responseCode, responseJSON);
+  // this is for 204, a "no content" header
 };
 
 const notFound = (request, response) => {

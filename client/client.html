@@ -81,7 +81,6 @@ const parseJSON = (xhr, content) => {
 
 
     const updateUsers = (e, nameForm) => {
-      e.preventDefault();
 
       //const url = userForm.querySelector('#urlField').value;
       //const method = userForm.querySelector('#methodSelect').value;
@@ -101,12 +100,12 @@ const parseJSON = (xhr, content) => {
 
       xhr.onload = () => handleResponse(xhr, true);
 
-      const formData = `name=${name}&author=${author}&serves=${serves}&nameii=${name}`;
-      //console.log(formData);
+      const formData = `name=${name}&author=${author}&serves=${serves}&instruction=${name}`;
+      console.log(formData);
 
       xhr.send(formData);
 
-      
+      e.preventDefault();
       return false; // prevents event bubbling
     }
 
@@ -120,6 +119,7 @@ const parseJSON = (xhr, content) => {
       const makeUsers = (e) => updateUsers(e, nameForm);
 
       userForm.addEventListener('submit', getUsers);
+      nameForm.addEventListener('submit', makeUsers);
     }
 
     window.onload = init;
