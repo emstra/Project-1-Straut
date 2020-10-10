@@ -20,8 +20,9 @@ const parseJSON = (xhr, content) => {
       }
     };
 
-    const handleResponse = (xhr) => {
+    const handleResponse = (xhr, parseResponse) => {
       const content = document.querySelector('#content');
+      const vertContent = document.querySelector('#recipeContentvert');
 
       switch (xhr.status) {
         case 200:
@@ -45,14 +46,34 @@ const parseJSON = (xhr, content) => {
       }
 
 
-      parseJSON(xhr, content)
-      // if (parseResponse) {
-      //   const obj = JSON.parse(xhr.response);
-      //   console.dir(obj);
-      //   content.innerHTML += `<p>${xhr.response}</p>`;
-      // } else {
-      //   content.innerHTML += `<p>metadata received</p>`;
-      // }
+      //parseJSON(xhr, content)
+      if (parseResponse) 
+      {
+        const obj = JSON.parse(xhr.response);
+        console.dir(obj);
+        content.innerHTML += `<p>${xhr.response}</p>`;
+
+        for(let i=0; i < Object.keys(xhr.response).length; i++)
+        {
+          vertContent.innerHTML += `<section id="recipeContenthor">`;
+
+          for (let j=0; j < Object.keys(xhr.response).length; j++)
+          {
+            vertContent.innerHTML += `<div id="RecipeBox">
+            <h4>${xhr.response[j].name}</h4>
+            <p>Serves: ${xhr.response[j].serves}</p>
+            <p>Author: ${xhr.response[j].author}</p>
+            <p>${xhr.response[j].instructions}</p>
+            `;
+          }
+
+          vertContent.innerHTML += `</div></div></div></section>`;
+        }
+      } 
+      else 
+      {
+        content.innerHTML += `<p>metadata received</p>`;
+      }
     };
 
 
@@ -87,7 +108,7 @@ const parseJSON = (xhr, content) => {
       const name = nameForm.querySelector('#nameField').value;
       const author = nameForm.querySelector('#authorField').value;
       const serves = nameForm.querySelector('#servesField').value;
-      const instructions = nameForm.querySelector('#nameField').value;
+      const instructions = nameForm.querySelector('#instructionField').value;
 
 
       //console.log(instructions);
@@ -100,7 +121,7 @@ const parseJSON = (xhr, content) => {
 
       xhr.onload = () => handleResponse(xhr, true);
 
-      const formData = `name=${name}&author=${author}&serves=${serves}&instruction=${name}`;
+      const formData = `name=${name}&author=${author}&serves=${serves}&instruction=${instructions}`;
       console.log(formData);
 
       xhr.send(formData);
@@ -135,7 +156,9 @@ const parseJSON = (xhr, content) => {
 
     <input id="searchBar" type="text" size="20" maxlenght="20" autofocus value="Search Here">
     <div id="recipeContentvert">
-      <div id="recipeContenthor">
+      
+      
+      <!--<div id="recipeContenthor">
         <div id="RecipeBox">
           <h4>Rec. Name</h4>
           <p>Serves: 1</p>
@@ -171,16 +194,6 @@ const parseJSON = (xhr, content) => {
       </div>
 
       <div id="recipeContenthor">
-        <div id="RecipeBox">
-          <h4>Rec. Name</h4>
-          <p>Serves: 1</p>
-          <p>Author: Nimoy Lembardo</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
-        </div>
 
         <div id="RecipeBox">
           <h4>Rec. Name</h4>
@@ -202,7 +215,7 @@ const parseJSON = (xhr, content) => {
             ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
             nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
             anim id est laborum.</p>
-        </div>
+        </div>-->
       
     </div>
 
