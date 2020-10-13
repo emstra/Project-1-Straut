@@ -4,82 +4,93 @@
 <head>
   <title>Recipe site</title>
   <link href="https://fonts.googleapis.com/css2?family=Sansita+Swashed&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Assistant&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/style.css">
 
   <script>
-"use strict";
+    "use strict";
 
-const parseJSON = (xhr, content) => {
-    	if(xhr.response && xhr.getResponseHeader('Content-Type') === 'application/json'){
-      	const obj = JSON.parse(xhr.response);
-      	console.dir(obj);
-      	
-      	if(obj.message){
-      		content.innerHTML += `<p>${obj.message}</p>`;
-      	}
+    const parseJSON = (xhr, content) => {
+      if (xhr.response && xhr.getResponseHeader('Content-Type') === 'application/json') {
+        const obj = JSON.parse(xhr.response);
+        //console.dir(obj);
+
+        if (obj.message) {
+          content.innerHTML += `<p>${obj.message}</p>`;
+        }
       }
     };
 
     const handleResponse = (xhr, parseResponse) => {
       const content = document.querySelector('#content');
-      const vertContent = document.querySelector('#recipeContentvert');
 
-      switch (xhr.status) {
-        case 200:
-          content.innerHTML = '<b>Success!</b>';
-          break;
-        case 201:
-          content.innerHTML = '<b>Created!</b>';
-          break;
-        case 204:
-          content.innerHTML = '<b>Updated (No Content)</b>'
-          break;
-        case 400:
-          content.innerHTML = '<b>Bad Request :-(</b>';
-          break;
-        case 404:
-          content.innerHTML = '<b>Resource Not Found</b>';
-          break;
-        default:
-          content.innerHTML = '<b>Error code not implemented by client :-()</b>';
-          break;
+
+
+      const vertContent = document.querySelector(`#recipeContentvert`);
+      //parseJSON(xhr, content)
+      if (parseResponse) {
+        const obj = JSON.parse(xhr.response);
+
+        if (obj.userResp) {
+          vertContent.innerHTML = "";
+
+
+
+          let horIndex = 0
+          vertContent.innerHTML += `<section class="recipeContenthor" id="Col${horIndex}"></div>`; // set up first column
+          let horContent = document.querySelector(`#Col${horIndex}`);
+          let numElAdded = 0;
+          // used this reference for iterating through JSON 
+          // https://masteringjs.io/tutorials/fundamentals/foreach-object
+          Object.keys(obj.userResp).forEach(key => {
+            //console.log(key, obj.users[key].name);
+
+
+
+            horContent.innerHTML += `<div class="RecipeBox">
+            <h4>${obj.userResp[key].name}</h4>
+            <p><b>Serves:</b> ${obj.userResp[key].serves}</p>
+            <p><b>Author:</b> ${obj.userResp[key].author}</p>
+            <hr>
+            <h5>Ingredients</h5>
+            <p>${obj.userResp[key].ingredients}</p>
+            <hr>
+            <h5>Ingredients</h5>
+            <p>${obj.userResp[key].instruction}</p>
+            </div>`;
+
+            numElAdded++;
+
+            if (numElAdded === 3) {
+              horIndex++;
+              vertContent.innerHTML += `<section class="recipeContenthor" id="Col${horIndex}"></div>`;
+              horContent = document.querySelector(`#Col${horIndex}`);
+              numElAdded++;
+            }
+
+
+
+          });
+        }
       }
 
-
-      //parseJSON(xhr, content)
-      if (parseResponse) 
-      {
-        const obj = JSON.parse(xhr.response);
-        console.dir(obj);
-        content.innerHTML += `<p>${xhr.response}</p>`;
-
-        for(let i=0; i < Object.keys(xhr.response).length; i++)
-        {
-          vertContent.innerHTML += `<section id="recipeContenthor">`;
-
-          for (let j=0; j < Object.keys(xhr.response).length; j++)
-          {
-            vertContent.innerHTML += `<div id="RecipeBox">
-            <h4>${xhr.response[j].name}</h4>
-            <p>Serves: ${xhr.response[j].serves}</p>
-            <p>Author: ${xhr.response[j].author}</p>
-            <p>${xhr.response[j].instructions}</p>
-            `;
-          }
-
-          vertContent.innerHTML += `</div></div></div></section>`;
-        }
-      } 
-      else 
-      {
-        content.innerHTML += `<p>metadata received</p>`;
+      else {
+        //content.innerHTML += `<p>metadata received</p>`;
       }
     };
 
 
-    const requestUpdate = (e, userForm) => {
-      const url = userForm.querySelector('#urlField').value;
-      const method = userForm.querySelector('#methodSelect').value;
+    const requestUpdate = (e, searchForm) => {
+      let url = "/getUsers"//userForm.querySelector('#urlField').value;
+      const method = "get"//userForm.querySelector('#methodSelect').value;
+
+      //console.log(searchForm.querySelector('#searchBar').value);
+      if(searchForm.querySelector('#searchBar').value != "")
+      {
+        url += `?search=${searchForm.querySelector('#searchBar').value}`;
+      }
+
+      //console.log(url);
 
       const xhr = new XMLHttpRequest();
       xhr.open(method, url);
@@ -99,6 +110,20 @@ const parseJSON = (xhr, content) => {
       return false; // prevents event bubbling
     }
 
+    const loadFirstUpdate = (e) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("get", "/getUsers");
+      xhr.setRequestHeader("Accept", "application/json"); // not necessary in this instance
+      xhr.onload = () => handleResponse(xhr, true);
+      xhr.send();
+
+      if(e)
+      {
+      e.preventDefault();
+      }
+      //return false; // prevents event bubbling
+    }
+
 
 
     const updateUsers = (e, nameForm) => {
@@ -108,21 +133,21 @@ const parseJSON = (xhr, content) => {
       const name = nameForm.querySelector('#nameField').value;
       const author = nameForm.querySelector('#authorField').value;
       const serves = nameForm.querySelector('#servesField').value;
+      const ingredients = nameForm.querySelector('#ingredientField').value;
       const instructions = nameForm.querySelector('#instructionField').value;
+      nameForm.reset();
 
 
-      //console.log(instructions);
 
       const xhr = new XMLHttpRequest();
       xhr.open('post', "/addUser");
 
       xhr.setRequestHeader("Accept", "application/json"); // not necessary in this instance
-      xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
       xhr.onload = () => handleResponse(xhr, true);
 
-      const formData = `name=${name}&author=${author}&serves=${serves}&instruction=${instructions}`;
-      console.log(formData);
+      const formData = `name=${name}&author=${author}&serves=${serves}&ingredients=${ingredients}&instruction=${instructions}`;
 
       xhr.send(formData);
 
@@ -133,14 +158,18 @@ const parseJSON = (xhr, content) => {
 
 
     const init = () => {
-      const userForm = document.querySelector('#userForm');
+      const searchForm = document.querySelector('#searchForm');
       const nameForm = document.querySelector('#nameForm');
+      const getAllForm = document.querySelector('#GetAll');
 
-      const getUsers = (e) => requestUpdate(e, userForm);
+      const getUsers = (e) => requestUpdate(e, searchForm);
       const makeUsers = (e) => updateUsers(e, nameForm);
+      const getAll = (e) => loadFirstUpdate(e, getAllForm);
 
-      userForm.addEventListener('submit', getUsers);
+      searchForm.addEventListener('submit', getUsers);
       nameForm.addEventListener('submit', makeUsers);
+      getAllForm.addEventListener('click',getAll);
+      loadFirstUpdate();
     }
 
     window.onload = init;
@@ -154,70 +183,19 @@ const parseJSON = (xhr, content) => {
   <section id="top">
     <h3 id="pgTitle">Recipe Book</h3>
 
-    <input id="searchBar" type="text" size="20" maxlenght="20" autofocus value="Search Here">
-    <div id="recipeContentvert">
-      
-      
-      <!--<div id="recipeContenthor">
-        <div id="RecipeBox">
-          <h4>Rec. Name</h4>
-          <p>Serves: 1</p>
-          <p>Author: Nimoy Lembardo</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
-        </div>
+    <form id="searchForm" action="/getUsers" method="get">
+      <input id="searchBar" type="text" size="20" maxlenght="20" placeholder="Search Here">
+      <input type="submit"  class="button" value="Search" />
+      <button type="button" class="button" id="GetAll">Get All</button>
+    </form>
 
-        <div id="RecipeBox">
-          <h4>Rec. Name</h4>
-          <p>Serves: 1</p>
-          <p>Author: Nimoy Lembardo</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
-        </div>
+    <!-- <form id="getForm" action="/getUsers" method="get">
+      <input type="submit"  class="button" value="Get All" />
+    </form> -->
 
-        <div id="RecipeBox">
-          <h4>Rec. Name</h4>
-          <p>Serves: 1</p>
-          <p>Author: Nimoy Lembardo</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
-        </div>
-      </div>
 
-      <div id="recipeContenthor">
 
-        <div id="RecipeBox">
-          <h4>Rec. Name</h4>
-          <p>Serves: 1</p>
-          <p>Author: Nimoy Lembardo</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
-        </div>
-
-        <div id="RecipeBox">
-          <h4>Rec. Name</h4>
-          <p>Serves: 1</p>
-          <p>Author: Nimoy Lembardo</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
-        </div>-->
-      
-    </div>
+    <div id="recipeContentvert"></div>
 
     <hr>
 
@@ -226,37 +204,25 @@ const parseJSON = (xhr, content) => {
     <form id="nameForm" action="/addUser" method="post">
 
       <label for="name" class="formTxt">Recipe Name: </label>
-      <input id="nameField" type="text" name="name" class="formItem"/>
+      <input id="nameField" type="text" name="name" class="formItem" />
 
       <label for="author" class="formTxt">Author: </label>
-      <input id="authorField" type="text" name="author" class="formItem"/>
+      <input id="authorField" type="text" name="author" class="formItem" />
 
       <label for="serves" class="formTxt">Serves: </label>
-      <input id="servesField" type="number" name="serves" min="0" max="100" step="1" class="formItem"/>
+      <input id="servesField" type="number" name="serves" min="0" max="100" step="1" class="formItem" />
 
-      
-      <label for="instructions" class="formTxt">Instruction: </label>
-      <!-- <input id="instructionField" type="text" name="instructions" class="formItem"/> -->
+
+      <label for="ingredients" class="formTxt">Ingredients: </label>
+      <textarea id="ingredientField" name="ingredient" rows=15 col=50 class="formItem"></textarea>
+
+      <label for="instructions" class="formTxt">Instructions: </label>
       <textarea id="instructionField" name="instruction" rows=15 col=50 class="formItem"></textarea>
 
-      <input type="submit" value="Submit" class="formItem"/>
-    </form>
-
-    <form id="userForm" action="/getUsers" method="get">
-      <select id='urlField'>
-        <option value='/getUsers'>/getUsers</option>
-        <option value='/notReal'>/notReal</option>
-      </select>
-      <select id="methodSelect">
-        <option value="get">GET</option>
-        <option value="head">HEAD</option>
-      </select>
-      <input type="submit" value="Get User" />
+      <input type="submit" class="button" value="Submit" class="formItem" />
     </form>
 
 
-  </section>
-  <section id="content">
   </section>
 </body>
 

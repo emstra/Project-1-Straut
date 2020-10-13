@@ -1,6 +1,25 @@
 // const { Console } = require('console');
 // Note this object is purely in memory
-const users = {};
+// Recipies from - https://www.allrecipes.com/recipe/221261/peanut-butter-banana-smoothie/
+//               -
+const users = {
+  BananaPeanutButterSmoothie: {
+    name: 'Banana Peanut Butter Smoothie',
+    author: 'Becca',
+    serves: '4',
+    ingredients: '2 Bananas, 2 cups milk, 1/2 cup peanut butter, 2 tablespoons honey, 2 cups ice cubes',
+    instruction: 'Put items in blender, blend until smooth',
+  },
+
+  Applesauce: {
+    name: 'Applesauce',
+    author: 'Sarah',
+    serves: '4',
+    ingredients: '4 apples, 3/4 cups water, 1/4 cup white sugar, 1/2 teaspoon cinnamon',
+    instruction: 'Put items in saucepan, cook at medium heat for 15 to 20 minutes, until apples are soft. Allow to cool, then mush with a fork',
+  },
+
+};
 
 const respondJSON = (request, response, status, object) => {
   response.writeHead(status, { 'Content-Type': 'application/json' });
@@ -17,12 +36,31 @@ const respondJSONMeta = (request, response, status) => {
   response.end();
 };
 
-const getUsers = (request, response) => {
+const getUsers = (request, response, params) => {
   // create a parent object to hold the users object
   // we could add a message, status code etc ... to this parent object
-  const responseJSON = {
-    users,
-  };
+  let userResp = {};
+  let responseJSON = {};
+
+  if (params.search === null || params.search === undefined) {
+    // console.dir('HERE II');
+    userResp = users;
+    responseJSON = {
+      userResp,
+    };
+  } else {
+    Object.keys(users).forEach((key) => {
+      if (users[key].name === params.search) {
+        // userResp = {key : users[key] };
+        userResp[key] = users[key];
+        // console.dir('HEREIII');
+      }
+    });
+
+    responseJSON = {
+      userResp,
+    };
+  }
 
   return respondJSON(request, response, 200, responseJSON);
 };
@@ -33,25 +71,16 @@ const getUsersMeta = (request, response) => {
   respondJSONMeta(request, response, 200);
 };
 
-// const updateUser = (request, response, parsedUrl) => {
-//   const newUser = {
-//     createdAt: Date.now(),
-//   };
-
-//   users[newUser.createdAt] = newUser; // never do this in the real world!
-//   // 201 status code == "created"
-//   return respondJSON(request, response, 201, newUser);
-// };
-
 const addUser = (request, response, body) => {
+  // adds user to the List
   const responseJSON = {
     message: 'need name, author, body, and instructions',
   };
 
-  if (!body.name || !body.author || !body.serves || !body.instruction) {
+  if (!body.name || !body.author || !body.serves || !body.ingredients || !body.instruction) {
     responseJSON.id = 'missingParams';
 
-    console.dir(body.name + ', ' + body.author + ', ' + body.serves + ', ' + body.instruction);
+    // console.dir(body.name + ', ' + body.author + ', ' + body.serves + ', ' + body.instruction);
     return respondJSON(request, response, 400, responseJSON); // 400=bad request
   }
 
@@ -67,12 +96,15 @@ const addUser = (request, response, body) => {
   users[body.name].name = body.name;
   users[body.name].author = body.author;
   users[body.name].serves = body.serves;
+  users[body.name].ingredients = body.ingredients;
   users[body.name].instruction = body.instruction;
 
   if (responseCode === 201) {
     responseJSON.message = 'Created Successfully';
     return respondJSON(request, response, responseCode, responseJSON);
   }
+
+  // console.dir(users);
 
   return respondJSON(request, response, responseCode, responseJSON);
   // this is for 204, a "no content" header

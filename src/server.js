@@ -21,11 +21,12 @@ const handlePost = (request, response, parsedUrl) => {
   }
 };
 
-const handleGet = (request, response, parsedUrl) => {
+const handleGet = (request, response, parsedUrl, params) => {
   if (parsedUrl.pathname === '/style.css') {
     htmlHandler.getCSS(request, response);
   } else if (parsedUrl.pathname === '/getUsers') {
-    jsonHandler.getUsers(request, response);
+    // console.dir(params.search);
+    jsonHandler.getUsers(request, response, params);
   } else {
     htmlHandler.getIndex(request, response);
   }
@@ -33,12 +34,15 @@ const handleGet = (request, response, parsedUrl) => {
 
 const onRequest = (request, response) => {
   const parsedUrl = url.parse(request.url);
+  const params = query.parse(parsedUrl.query);
+  // console.dir(params);
+
   if (request.method === 'POST') {
     handlePost(request, response, parsedUrl);
-    console.dir('posting');
+    // console.dir('posting');
   } else {
-    handleGet(request, response, parsedUrl);
-    console.dir(`getting${parsedUrl.pathname}`);
+    handleGet(request, response, parsedUrl, params);
+    // console.dir(`getting${parsedUrl.pathname}`);
   }
 };
 
